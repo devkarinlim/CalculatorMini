@@ -7,32 +7,22 @@
 
 import XCTest
 @testable import CalculatorMini
+var sut: ViewController!
 
 class CalculatorMiniTests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        sut = storyboard.instantiateInitialViewController()
+        sut.loadView()
+        sut.viewDidLoad()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        sut = nil
+        try super.tearDownWithError()
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
     
     func testNegativeExponentOfTen(){
         //Given
@@ -41,10 +31,9 @@ class CalculatorMiniTests: XCTestCase {
         let testValue3 = "0,0025"
         
         //When
-        let controller = ViewController()
-        let testResult1 = controller.getNegativeExponentFormat(testValue1)
-        let testResult2 = controller.getNegativeExponentFormat(testValue2)
-        let testResult3 = controller.getNegativeExponentFormat(testValue3)
+        let testResult1 = sut.getNegativeExponentFormat(testValue1)
+        let testResult2 = sut.getNegativeExponentFormat(testValue2)
+        let testResult3 = sut.getNegativeExponentFormat(testValue3)
         //Then
         XCTAssertEqual(testResult1, "1,5e-17", "Negative exponent format is wrong")
         XCTAssertEqual(testResult2, "4,8e-9", "Negative exponent format is wrong")
@@ -58,16 +47,14 @@ class CalculatorMiniTests: XCTestCase {
         let testValue3 = "1.750"
         
         //When
-        let controller = ViewController()
-        let testResult1 = controller.getPositiveExponentFormat(testValue1)
-        let testResult2 = controller.getPositiveExponentFormat(testValue2)
-        let testResult3 = controller.getPositiveExponentFormat(testValue3)
+        let testResult1 = sut.getPositiveExponentFormat(testValue1)
+        let testResult2 = sut.getPositiveExponentFormat(testValue2)
+        let testResult3 = sut.getPositiveExponentFormat(testValue3)
         //Then
         XCTAssertEqual(testResult1, "1e12", "Positive exponent format is wrong")
         XCTAssertEqual(testResult2, "4,8e17", "Positive exponent format is wrong")
         XCTAssertEqual(testResult3, "1,8e3", "Positive exponent format is wrong")
     }
-    
     
     func testConvertResultToExponentOfTen(){
         //Given
@@ -76,10 +63,9 @@ class CalculatorMiniTests: XCTestCase {
         let testValue3 = "0,0000000048"
         
         //When
-        let controller = ViewController()
-        let testResult1 = controller.convertResultToExponentOfTen(testValue1)
-        let testResult2 = controller.convertResultToExponentOfTen(testValue2)
-        let testResult3 = controller.convertResultToExponentOfTen(testValue3)
+        let testResult1 = sut.convertResultToExponentOfTen(testValue1)
+        let testResult2 = sut.convertResultToExponentOfTen(testValue2)
+        let testResult3 = sut.convertResultToExponentOfTen(testValue3)
         
         //Then
         XCTAssertEqual(testResult1, "1e12")
@@ -162,6 +148,18 @@ class CalculatorMiniTests: XCTestCase {
         XCTAssertEqual(testResult, Double(1250500.88), "Should convert string to double")
     }
     
+    func testFormatNonNumberToNumber(){
+        //given
+        let testValue = "abcde"
+        
+        //when
+        let testResult = testValue.formatToNumber()
+        
+        //then
+        XCTAssertEqual(testResult, 0)
+        
+    }
+
     
     func testIsAbleInput(){
         //Given
@@ -169,27 +167,174 @@ class CalculatorMiniTests: XCTestCase {
         let testValueFalse = "100.000.000"
         
         //When
-        let controller = ViewController()
-        let testResultTrue = controller.isAbleInput(testValueTrue)
-        let testResultFalse = controller.isAbleInput(testValueFalse)
+        let testResultTrue = sut.isAbleInput(testValueTrue)
+        let testResultFalse = sut.isAbleInput(testValueFalse)
         
         //Then
         XCTAssertTrue(testResultTrue)
         XCTAssertFalse(testResultFalse)
     }
     
-    
-    func test<#Name#>(){
-        //Given
-        <#context#>
+    func testFormatResultToDecimal(){
+        //given
+        sut.resultValue = "1250000,00015"
         
-        //When
-        <#statement#>
+        //when
+        sut.formatResultToDecimal()
         
-        //Then
-        <#expected result#>
+        //then
+        XCTAssertEqual(sut.resultValue, "1.250.000,00015")
+        XCTAssertEqual(sut.resultLabel.text, "1.250.000,00015")
     }
-                       
-                       
+    
+    func testFormatNonNumberResultToDecimal(){
+        //given
+        sut.resultValue = "yuhuuuu"
+        
+        //when
+        sut.formatResultToDecimal()
+        
+        //then
+        XCTAssertEqual(sut.resultValue, "0")
+        XCTAssertEqual(sut.resultLabel.text, "0")
+        
+    }
+    
+    
+
+    
+    func testClearValue(){
+        //given
+        sut.isNegative = true
+        sut.isDecimalInputed = true
+        sut.resultValue = "1.250.000,00015"
+        
+        //when
+        sut.clearValue()
+        
+        //then
+        XCTAssertFalse(sut.isNegative)
+        XCTAssertFalse(sut.isDecimalInputed)
+        XCTAssertEqual(sut.resultValue, "0")
+        
+    }
+    
+    func testClearInput(){
+        //given
+        sut.firstInput = 100
+        sut.secondInput = 50
+        sut.operationType = .division
+        sut.isFirstEqual = false
+        sut.resetCount = 1
+        
+        //when
+        sut.clearInput()
+        
+        //then
+        XCTAssertEqual(sut.firstInput, 0)
+        XCTAssertEqual(sut.secondInput, 0)
+        XCTAssertEqual(sut.operationType, .none)
+        XCTAssertTrue(sut.isFirstEqual)
+        XCTAssertEqual(sut.resetCount, 0)
+        
+    }
+
+    func testSetFirstInput(){
+        //given
+        let operationType = OperationType.plus
+        sut.operationType = .none
+        sut.resultValue = "1.250.500,0048"
+        
+        //when
+        sut.setFirstInput(operationType)
+        
+        //then
+        XCTAssertEqual(sut.operationType, operationType)
+        XCTAssertEqual(sut.firstInput, 1250500.0048)
+    }
+
+    func testResetCalculationOnce(){
+        //given
+        sut.resetCount = 0
+        sut.firstInput = 1250500.0048
+        sut.operationType = .plus
+        
+        //when
+        sut.resetCalculation()
+        
+        //then
+        XCTAssertEqual(sut.firstInput, 0)
+        XCTAssertEqual(sut.resetCount, 1)
+        
+    }
+
+    func testResetCalculationTwice(){
+        //given
+        sut.resetCount = 1
+        sut.firstInput = 1250500.0048
+        sut.operationType = .plus
+        
+        //when
+        sut.resetCalculation()
+        
+        //then
+        XCTAssertEqual(sut.firstInput, 0)
+        XCTAssertEqual(sut.resetCount, 0)
+        
+    }
+
+    func testNegationTapPositiveToNegative(){
+        //given
+        sut.resultLabel.text = "0"
+        
+        //when
+        sut.negationButtonTap()
+        
+        //then
+        XCTAssertEqual(sut.resultLabel.text, "-0")
+        XCTAssertTrue(sut.isNegative)
+    }
+    
+    func testNegationTapNegativeToPositive(){
+        //given
+        sut.resultLabel.text = "-0"
+        sut.isNegative = true
+        
+        //when
+        sut.negationButtonTap()
+        
+        //then
+        XCTAssertEqual(sut.resultLabel.text, "0")
+        XCTAssertFalse(sut.isNegative)
+    }
+    
+    func testNegationTapAfterOperationTap(){
+        //given
+        sut.operationType = .plus
+        sut.resultValue = "100"
+        sut.resultLabel.text = "0"
+        
+        //when
+        sut.negationButtonTap()
+        
+        //then
+        XCTAssertEqual(sut.resultLabel.text, "-100")
+        XCTAssertTrue(sut.isNegative)
+    }
+
+    func testIsNumberInputTrue(){
+        //given
+        sut.isNumberInput = false
+        
+        //when
+        sut.isNumberInput = true
+        
+        //then
+        XCTAssertEqual(sut.resetButton.titleLabel?.text, "C")
+        
+    }
+
+
+
     
 }

@@ -16,16 +16,16 @@ class ViewController: UIViewController {
     @IBOutlet weak var row4: UIStackView!
     @IBOutlet weak var row5: UIStackView!
     
-    private var resetButton: CustomButton!
-    private var isNegative: Bool = false
-    private var operationType : OperationType = .none
-    private var isDecimalInputed: Bool = false
-    private var firstInput: Double = 0
-    private var secondInput: Double = 0
-    private var resetCount: Int = 0
+    var resetButton: CustomButton!
+    var isNegative: Bool = false
+    var operationType : OperationType = .none
+    var isDecimalInputed: Bool = false
+    var firstInput: Double = 0
+    var secondInput: Double = 0
+    var resetCount: Int = 0
     var resultValue: String = ""
-    private var isFirstEqual: Bool = true
-    private var isNumberInput: Bool = false{
+    var isFirstEqual: Bool = true
+    var isNumberInput: Bool = false{
         willSet(newValue){
             if newValue{
                 resetButton.setTitle("C", for: .normal)
@@ -36,10 +36,14 @@ class ViewController: UIViewController {
         }
     }
     
-    override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
-        self.view.setNeedsUpdateConstraints()
-        self.view.updateConstraintsIfNeeded()
+    override var shouldAutorotate: Bool{
+        return false
     }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+        return UIInterfaceOrientationMask.portrait
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -223,7 +227,7 @@ class ViewController: UIViewController {
     }
     
     
-    @objc func resetCalculation(sender: Any){
+    @objc func resetCalculation(){
         resultLabel.text = "0"
         if(resetCount == 1){
             clearInput()
@@ -239,7 +243,7 @@ class ViewController: UIViewController {
         isNumberInput = false
     }
     
-    private func clearInput(){
+    func clearInput(){
         firstInput = 0
         secondInput = 0
         operationType = .none
@@ -247,7 +251,7 @@ class ViewController: UIViewController {
         resetCount = 0
     }
     
-    private func clearValue(){
+    func clearValue(){
         isNegative = false
         isDecimalInputed = false
         resultValue = "0"
@@ -266,7 +270,7 @@ class ViewController: UIViewController {
             else{
                 resultLabel.text?.removeFirst()
             }
-            resultValue = resultLabel.text ?? ""
+            resultValue = resultLabel.text!
         }
     }
     
@@ -325,9 +329,8 @@ class ViewController: UIViewController {
         formatter.decimalSeparator = ","
         formatter.groupingSeparator = "."
         let resultVal = formatter.number(from:resultValue.removeGroupSeparator())
-//        resultLabel.text = formatter.string(from: resultVal ?? 0)
-        resultValue = formatter.string(from: resultVal ?? 0) ?? "0"
-        resultLabel.text = convertResultToExponentOfTen(resultValue)
+        resultValue = formatter.string(from: resultVal ?? 0)!
+        resultLabel?.text = convertResultToExponentOfTen(resultValue)
     }
     
     func setFirstInput(_ typeOperation: OperationType){
@@ -376,8 +379,8 @@ class ViewController: UIViewController {
         let decimalValue = numValue/NSDecimalNumber(decimal: divideByValue).doubleValue
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 1
-        let decimalValueStr = formatter.string(from: decimalValue as NSNumber)?.formatDecimalSeparator() ?? ""
-        return decimalValueStr + "e" + String(nPow)
+        let decimalValueStr = formatter.string(from: decimalValue as NSNumber)?.formatDecimalSeparator()
+        return decimalValueStr! + "e" + String(nPow)
     }
     
     func getNegativeExponentFormat(_ digitStr: String)->String{
