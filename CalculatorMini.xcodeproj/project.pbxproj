@@ -16,6 +16,7 @@
 		EEA5D9212873D665000677B1 /* CalculatorMiniTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA5D9202873D665000677B1 /* CalculatorMiniTests.swift */; };
 		EEA5D92B2873D665000677B1 /* CalculatorMiniUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA5D92A2873D665000677B1 /* CalculatorMiniUITests.swift */; };
 		EEA5D92D2873D665000677B1 /* CalculatorMiniUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA5D92C2873D665000677B1 /* CalculatorMiniUITestsLaunchTests.swift */; };
+		EEA5D9422873EDF2000677B1 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA5D9412873EDF2000677B1 /* CustomButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		EEA5D9262873D665000677B1 /* CalculatorMiniUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculatorMiniUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEA5D92A2873D665000677B1 /* CalculatorMiniUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorMiniUITests.swift; sourceTree = "<group>"; };
 		EEA5D92C2873D665000677B1 /* CalculatorMiniUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorMiniUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		EEA5D9412873EDF2000677B1 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				EEA5D9122873D665000677B1 /* Assets.xcassets */,
 				EEA5D9142873D665000677B1 /* LaunchScreen.storyboard */,
 				EEA5D9172873D665000677B1 /* Info.plist */,
+				EEA5D9412873EDF2000677B1 /* CustomButton.swift */,
 			);
 			path = CalculatorMini;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 				EEA5D90E2873D662000677B1 /* ViewController.swift in Sources */,
 				EEA5D90A2873D662000677B1 /* AppDelegate.swift in Sources */,
 				EEA5D90C2873D662000677B1 /* SceneDelegate.swift in Sources */,
+				EEA5D9422873EDF2000677B1 /* CustomButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
