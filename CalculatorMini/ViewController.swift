@@ -17,9 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var row5: UIStackView!
     
     var resetButton: CustomButton!
-    var isNegative: Bool = false
     var operationType : OperationType = .none
-    var isDecimalInputed: Bool = false
     var firstInput: Double = 0
     var secondInput: Double = 0
     var resetCount: Int = 0
@@ -43,7 +41,6 @@ class ViewController: UIViewController {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask{
         return UIInterfaceOrientationMask.portrait
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +96,6 @@ class ViewController: UIViewController {
         row1.addArrangedSubview(plusminusButton)
         row1.addArrangedSubview(percentButton)
         row1.addArrangedSubview(divideButton)
-        
     }
     
     func setupRow2FromTop(){
@@ -191,41 +187,44 @@ class ViewController: UIViewController {
         row5.addArrangedSubview(num0Button)
         row5.addArrangedSubview(decimalButton)
         row5.addArrangedSubview(equalsButton)
-    
     }
     
     @objc func numberButtonTap(sender: Any){
         if let buttonLabel = (sender as AnyObject).titleLabel {
             if resultLabel.text != nil{
                 if !isAbleInput(resultValue) {return}
+                if !isFirstEqual{
+                    clearInput()
+                    if buttonLabel?.text != ","{
+                        resultValue = buttonLabel?.text ?? "0"
+                    }
+                }
                 if operationType != .none && resultValue == "0"{
                     resultLabel.text = resultValue
                 }
-//                resultValue = resultLabel.text ?? ""
                 if resultLabel.text == "0" && buttonLabel?.text != ","{
                     resultValue = ""
                 }
                 else if resultLabel.text == "-0" && buttonLabel?.text != ","{
                     resultValue = "-"
                 }
-                if !(resultLabel.text?.last == "," && buttonLabel?.text == ","){
+                if !resultLabel.text!.isContains(",") && buttonLabel?.text == ","{
                     resultValue += buttonLabel!.text ?? ""
                     if(buttonLabel?.text == ","){
-                        isDecimalInputed = true
+                        resultLabel.text! += buttonLabel?.text ?? ""
                     }
                 }
-                if !isDecimalInputed{
-                    formatResultToDecimal()
-                }
-                else{
+                if buttonLabel?.text != ","{
+                    resultValue += buttonLabel!.text ?? ""
                     resultLabel.text! += buttonLabel?.text ?? ""
+                }
+                if !resultLabel.text!.isContains(","){
+                    formatResultToDecimal()
                 }
                 isNumberInput = true
             }
         }
-        
     }
-    
     
     @objc func resetCalculation(){
         resultLabel.text = "0"
@@ -252,25 +251,26 @@ class ViewController: UIViewController {
     }
     
     func clearValue(){
-        isNegative = false
-        isDecimalInputed = false
         resultValue = "0"
     }
     
     @objc func negationButtonTap(){
         resetCount = 0
-        isNegative = !isNegative
+        let isNegative = resultLabel.text!.isContains("-")
         if operationType != .none{
             resultLabel.text = resultValue
         }
         if let text = resultLabel.text{
-            if isNegative{
+            if !isNegative{
                 resultLabel.text?.insert("-", at: text.startIndex)
             }
             else{
                 resultLabel.text?.removeFirst()
             }
             resultValue = resultLabel.text!
+            if !isFirstEqual{
+                firstInput = resultValue.formatToNumber()
+            }
         }
     }
     
@@ -279,6 +279,9 @@ class ViewController: UIViewController {
         let result = resultValue.removeGroupSeparator().formatToNumber() / 100
         resultValue = String(result).formatDecimalSeparator()
         formatResultToDecimal()
+        if !isFirstEqual{
+            firstInput = resultValue.formatToNumber()
+        }
     }
     
     @objc func divisionButtonTap(){
@@ -298,7 +301,10 @@ class ViewController: UIViewController {
     }
     
     @objc func equalsButtonTap(){
-        if operationType == .none{return}
+        if operationType == .none{
+            isFirstEqual = false
+            return
+        }
         if isFirstEqual{
             secondInput = resultLabel.text?.formatToNumber() ?? 0
         }
@@ -321,6 +327,7 @@ class ViewController: UIViewController {
         }
         formatResultToDecimal()
         isFirstEqual = false
+        isNumberInput = false
         firstInput = resultValue.formatToNumber()
     }
     
@@ -350,6 +357,7 @@ class ViewController: UIViewController {
         isFirstEqual = true
         clearValue()
         resetCount = 0
+        isNumberInput = false
     }
     
     //limit input digits to 9 number digits max
@@ -452,6 +460,14 @@ extension String{
     
     func formatDecimalSeparator()->String{
         return self.replacingOccurrences(of: ".", with: ",")
+    }
+    
+    func isContains(_ char: String.Element)->Bool{
+        var result = false
+        if self.firstIndex(of: char) != nil{
+            result = true
+        }
+        return result
     }
     
     mutating func removeDecimalDigits()-> String{
