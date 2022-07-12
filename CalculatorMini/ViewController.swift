@@ -276,12 +276,9 @@ class ViewController: UIViewController {
     
     @objc func percentButtonTap(){
         resetCount = 0
-        operationType = .none
-        if resultValue != "0"{
-            let result = resultValue.removeGroupSeparator().formatToNumber() / 100
-            resultValue = String(result).formatDecimalSeparator()
-            formatResultToDecimal()
-        }
+        let result = resultValue.removeGroupSeparator().formatToNumber() / 100
+        resultValue = String(result).formatDecimalSeparator()
+        formatResultToDecimal()
     }
     
     @objc func divisionButtonTap(){
@@ -315,7 +312,12 @@ class ViewController: UIViewController {
         case .multiple:
             resultValue = String(firstInput * secondInput).formatDecimalSeparator()
         case .division:
-            resultValue = String(firstInput / secondInput).formatDecimalSeparator()
+            if firstInput == 1 && secondInput == 0{
+                resultValue = "ERROR"
+            }
+            else{
+                resultValue = String(firstInput / secondInput).formatDecimalSeparator()
+            }
         }
         formatResultToDecimal()
         isFirstEqual = false
@@ -323,6 +325,10 @@ class ViewController: UIViewController {
     }
     
     func formatResultToDecimal(){
+        if resultValue == "ERROR"{
+            resultLabel?.text = resultValue
+            return
+        }
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 100
@@ -334,6 +340,9 @@ class ViewController: UIViewController {
     }
     
     func setFirstInput(_ typeOperation: OperationType){
+        if isNumberInput && operationType != .none{
+            equalsButtonTap()
+        }
         if operationType == .none{
             firstInput = resultValue.formatToNumber()
         }
@@ -390,7 +399,13 @@ class ViewController: UIViewController {
         let decimalValue = numValue*NSDecimalNumber(decimal: divideByValue).doubleValue
         var decimalValueStr = ""
         (decimalValueStr, nPow) = getDecimalValueStr(decimalValue: decimalValue, nPow: nPow)
-        return decimalValueStr + "e-" + String(nPow)
+        if nPow >= 9{
+            return decimalValueStr + "e-" + String(nPow)
+        }
+        else{
+            return decimalValueStr
+        }
+        
     }
     
     func getDecimalValueStr(decimalValue: Double, nPow: Int)->(String,Int){
@@ -401,7 +416,12 @@ class ViewController: UIViewController {
         var decimalValueStr = formatter.string(from: decValue as NSNumber)!.formatDecimalSeparator()
         if decimalValueStr.count > 1{
             n -= decimalValueStr.count - 1
-            decValue /= NSDecimalNumber(decimal: pow(10, decimalValueStr.count - 1)).doubleValue
+            var newNPow = decimalValueStr.count - 1
+            if n < 9{
+                formatter.maximumFractionDigits = 8
+                newNPow = nPow
+            }
+            decValue /= NSDecimalNumber(decimal: pow(10, newNPow)).doubleValue
             decimalValueStr = formatter.string(from: decValue as NSNumber)!.formatDecimalSeparator()
         }
         return (decimalValueStr, n)

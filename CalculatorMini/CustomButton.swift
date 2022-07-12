@@ -39,7 +39,6 @@ class CustomButton: UIButton {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupButton()
     }
     
     

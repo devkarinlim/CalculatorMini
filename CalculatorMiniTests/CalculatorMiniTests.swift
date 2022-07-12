@@ -124,7 +124,6 @@ class CalculatorMiniTests: XCTestCase {
         XCTAssertEqual(testResult1, "1.000.000000001", "Should remove only the ',' ")
     }
     
-    
     func testFormatDecimalSeparator(){
         //Given
         let testValue = "1.25"
@@ -135,7 +134,6 @@ class CalculatorMiniTests: XCTestCase {
         //Then
         XCTAssertEqual(testResult, "1,25", "Replace . with ,")
     }
-    
     
     func testFormatToNumber(){
         //Given
@@ -159,7 +157,6 @@ class CalculatorMiniTests: XCTestCase {
         XCTAssertEqual(testResult, 0)
         
     }
-
     
     func testIsAbleInput(){
         //Given
@@ -199,9 +196,6 @@ class CalculatorMiniTests: XCTestCase {
         XCTAssertEqual(sut.resultLabel.text, "0")
         
     }
-    
-    
-
     
     func testClearValue(){
         //given
