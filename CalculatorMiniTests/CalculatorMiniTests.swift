@@ -24,6 +24,13 @@ class CalculatorMiniTests: XCTestCase {
         try super.tearDownWithError()
     }
     
+    func testPerformance(){
+        self.measure {
+            
+        }
+    }
+    
+    
     func testNegativeExponentOfTen(){
         //Given
         let testValue1 = "0,000000000000000015"
@@ -37,7 +44,7 @@ class CalculatorMiniTests: XCTestCase {
         //Then
         XCTAssertEqual(testResult1, "1,5e-17", "Negative exponent format is wrong")
         XCTAssertEqual(testResult2, "4,8e-9", "Negative exponent format is wrong")
-        XCTAssertEqual(testResult3, "2,5e-3", "Negative exponent format is wrong")
+        XCTAssertEqual(testResult3, "0,0025", "Negative exponent format is wrong")
     }
     
     func testPositiveExponentOfTen(){
@@ -199,16 +206,16 @@ class CalculatorMiniTests: XCTestCase {
     
     func testClearValue(){
         //given
-        sut.isNegative = true
-        sut.isDecimalInputed = true
+//        sut.isNegative = true
+//        sut.isDecimalInputed = true
         sut.resultValue = "1.250.000,00015"
         
         //when
         sut.clearValue()
         
         //then
-        XCTAssertFalse(sut.isNegative)
-        XCTAssertFalse(sut.isDecimalInputed)
+//        XCTAssertFalse(sut.isNegative)
+//        XCTAssertFalse(sut.isDecimalInputed)
         XCTAssertEqual(sut.resultValue, "0")
         
     }
@@ -286,20 +293,20 @@ class CalculatorMiniTests: XCTestCase {
         
         //then
         XCTAssertEqual(sut.resultLabel.text, "-0")
-        XCTAssertTrue(sut.isNegative)
+//        XCTAssertTrue(sut.isNegative)
     }
     
     func testNegationTapNegativeToPositive(){
         //given
         sut.resultLabel.text = "-0"
-        sut.isNegative = true
+//        sut.isNegative = true
         
         //when
         sut.negationButtonTap()
         
         //then
         XCTAssertEqual(sut.resultLabel.text, "0")
-        XCTAssertFalse(sut.isNegative)
+//        XCTAssertFalse(sut.isNegative)
     }
     
     func testNegationTapAfterOperationTap(){
@@ -313,7 +320,7 @@ class CalculatorMiniTests: XCTestCase {
         
         //then
         XCTAssertEqual(sut.resultLabel.text, "-100")
-        XCTAssertTrue(sut.isNegative)
+//        XCTAssertTrue(sut.isNegative)
     }
 
     func testIsNumberInputTrue(){
